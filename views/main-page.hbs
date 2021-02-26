@@ -1,0 +1,49 @@
+<div style="width:80%; margin:0 auto">
+    <div id="cards" class="d-flex flex-row bd-highlight mb-3 justify-content-center flex-wrap">
+        {{#each users}}
+        <div class="p-2 bg-dark card  text-white mb-3" style="width: 18rem; margin:10px 10px;">
+            <img class="card-img-top" src="{{avatar}}" alt="Avatar image">
+            <div class="card-header">{{first_name}} {{last_name}}</div>
+            <div class="card-body">
+                <p class="card-text">Email: {{email}}</p>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    <div id="add-more">
+        <button id="add-more-button" style="display:block; margin:10px  auto" type="button" class="btn btn-dark">Load
+            more...</button>
+    </div>
+</div>
+
+<script>
+    let counter = 1;
+
+    $("#add-more-button").click(async function () {
+
+        const users = await axios.get('api/users', {
+            params: {
+                page: `${counter + 1}`
+            }
+        })
+
+        if (users.data.length === 0) {
+            let p = $('<p></p>').addClass("card-text").text("Sorry, we don't have any cards...").css({ 'text-align': 'center', 'color': 'black', 'font-weight': 'bold', 'margin': '10px 0px', });
+            $("#add-more-button").remove()
+            $("#add-more").append(p)
+        }
+
+        users.data.map(user => {
+            let card = $('<div></div>').addClass("p-2 bg-dark card  text-white mb-3").css({ 'width': '18rem', 'margin': '10px 10px' });
+            let img = $('<img>').addClass("card-img-top").attr({ "src": `${user.avatar}` });
+            let cardHeader = $('<div></div>').addClass("card-header").text(`${user.first_name} ${user.last_name}`);
+            let cardBody = $('<div></div>').addClass("card-body");
+            let p = $('<p></p>').addClass("card-text").text(`Email: ${user.email}`);
+
+            $("#cards").append(card.append(img, cardHeader, cardBody.append(p)))
+        })
+
+        counter += 1;
+    })
+
+</script>
