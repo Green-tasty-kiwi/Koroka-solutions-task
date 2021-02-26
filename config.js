@@ -1,3 +1,3 @@
 module.exports = {
-    reqresApiUrl: 'https://reqres.in/api/users'
+    reqresApiUrl: 'https://reqres.in/api'
 }
